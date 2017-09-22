@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">Lab1</string>
+    <string name="title">中山大学学生信息系统</string>
+    <string name="id_prompt">学号:</string>
+    <string name="id_hint">请输入学号</string>
+    <string name="password_prompt">密码:</string>
+    <string name="password_hint">请输入密码</string>
+    <string name="radio_student">学生</string>
+    <string name="radio_teacher">教职工</string>
+    <string name="button_login">登录</string>
+    <string name="button_regist">注册</string>
 </resources>
