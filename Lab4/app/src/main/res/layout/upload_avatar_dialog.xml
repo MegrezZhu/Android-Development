@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center_vertical">
+    <Button
+        android:id="@+id/select1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/upload_avatar_select1"
+        android:textSize="18sp"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="15dp"
+        android:textAlignment="textStart"
+        style="?android:attr/borderlessButtonStyle"/>
+    <Button
+        android:id="@+id/select2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/upload_avatar_select2"
+        android:textSize="18sp"
+        android:layout_marginStart="15dp"
+        android:textAlignment="textStart"
+        style="?android:attr/borderlessButtonStyle"/>
+
+</LinearLayout>

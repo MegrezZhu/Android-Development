@@ -1,3 +1,25 @@
 <resources>
     <string name="app_name">Lab4</string>
+    <string name="title">中山大学学生信息系统</string>
+    <string name="id_prompt">学号:</string>
+    <string name="id_hint">请输入学号</string>
+    <string name="password_prompt">密码:</string>
+    <string name="password_hint">请输入密码</string>
+    <string name="radio_student">学生</string>
+    <string name="radio_teacher">教职工</string>
+    <string name="button_login">登录</string>
+    <string name="button_regist">注册</string>
+    <string name="upload_dialog_title">上传头像</string>
+    <string name="action_confirm">确定</string>
+    <string name="action_cancel">取消</string>
+    <string name="action_snackbar_clicked">Snackbar的确定按钮被点击了</string>
+    <string name="select_toast">您选择了</string>
+    <string name="upload_avatar_select1">拍摄</string>
+    <string name="upload_avatar_select2">从相册选择</string>
+    <string name="login_failed">学号或密码错误</string>
+    <string name="login_failed_empty_id">学号不能为空</string>
+    <string name="login_failed_empty_password">密码不能为空</string>
+    <string name="login_succeeded">登录成功</string>
+    <string name="regist_student_not_supported">学生注册功能尚未启用</string>
+    <string name="regist_teacher_not_supported">教职工注册功能尚未启用</string>
 </resources>
