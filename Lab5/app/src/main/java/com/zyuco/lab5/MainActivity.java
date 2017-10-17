@@ -28,6 +28,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter;
+import jp.wasabeef.recyclerview.animators.OvershootInLeftAnimator;
+
 public class MainActivity extends AppCompatActivity {
     private boolean isMainPage = true;
     List<Map<String, String>> items = new LinkedList<>();
@@ -75,7 +78,10 @@ public class MainActivity extends AppCompatActivity {
                     .show();
             }
         });
-        list.setAdapter(adapter);
+        ScaleInAnimationAdapter animationAdapter = new ScaleInAnimationAdapter(adapter);
+        animationAdapter.setDuration(1000);
+        list.setAdapter(animationAdapter);
+        list.setItemAnimator(new OvershootInLeftAnimator());
 
         final ListView list1 = findViewById(R.id.cart_list);
         final SimpleAdapter adapter1 = new SimpleAdapter(
