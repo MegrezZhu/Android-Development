@@ -4,8 +4,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -59,6 +61,18 @@ public class ItemDetailActivity extends AppCompatActivity {
                     .show();
             }
         });
+
+        final ListView actionList = findViewById(R.id.action_list);
+        actionList.setAdapter(new ArrayAdapter<String>(
+            this,
+            R.layout.action_sheet_item,
+            new String[]{
+                getString(R.string.item_purchase),
+                getString(R.string.item_share),
+                getString(R.string.item_no_interest),
+                getString(R.string.item_more_sale)
+            }
+        ));
     }
 
     private void updateData(Bundle bundle) {

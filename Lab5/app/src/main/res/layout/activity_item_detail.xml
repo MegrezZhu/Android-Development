@@ -137,13 +137,15 @@
 
     <Button
         style="?attr/borderlessButtonStyle"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:padding="0dp"
         android:text="@string/item_more_info"
+        android:textAlignment="textStart"
         android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@+id/action_sheet_line"
         app:layout_constraintLeft_toLeftOf="@id/left_guideline"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/price_line"/>
 
     <View
@@ -156,66 +158,20 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/price_line"/>
 
-    <LinearLayout
+    <ListView
+        android:id="@+id/action_list"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/action_sheet_line">
+        app:layout_constraintTop_toBottomOf="@id/action_sheet_line"/>
 
-        <Button
-            style="?attr/borderlessButtonStyle"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:text="@string/item_purchase"
-            android:textAlignment="textStart"
-            android:textSize="20sp"/>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#1E000000"/>
-
-        <Button
-            style="?attr/borderlessButtonStyle"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:text="@string/item_share"
-            android:textAlignment="textStart"
-            android:textSize="20sp"/>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#1E000000"/>
-
-        <Button
-            style="?attr/borderlessButtonStyle"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:text="@string/item_no_interest"
-            android:textAlignment="textStart"
-            android:textSize="20sp"/>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#1E000000"/>
-
-        <Button
-            style="?attr/borderlessButtonStyle"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:text="@string/item_more_sale"
-            android:textAlignment="textStart"
-            android:textSize="20sp"/>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#1E000000"/>
-    </LinearLayout>
-
+    <View
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="#1E000000"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/action_list"/>
 
 </android.support.constraint.ConstraintLayout>
