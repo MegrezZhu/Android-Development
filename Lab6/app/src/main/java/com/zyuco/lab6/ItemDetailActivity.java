@@ -1,5 +1,6 @@
 package com.zyuco.lab6;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -9,6 +10,8 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -52,17 +55,21 @@ public class ItemDetailActivity extends AppCompatActivity {
                 map.put("type", bundle.get("type").toString());
                 map.put("info", bundle.get("info").toString());
                 map.put("sname", bundle.get("sname").toString());
-                ((Lab6Application)getApplicationContext()).cart.add(map);
-                ((Lab6Application)getApplicationContext()).cartAdapter.notifyDataSetChanged();
 
                 Toast
                     .makeText(ItemDetailActivity.this, R.string.item_add_toast,Toast.LENGTH_SHORT)
                     .show();
+
+                Intent broadcast = new Intent(DynamicReceiver.ADD_SHOPLIST);
+                broadcast.putExtras(bundle); // re-use
+                ItemDetailActivity.this.sendBroadcast(broadcast);
+
+                EventBus.getDefault().post(new MessageEvent(map)); // notify MainActivity to add card item
             }
         });
 
         final ListView actionList = findViewById(R.id.action_list);
-        actionList.setAdapter(new ArrayAdapter<String>(
+        actionList.setAdapter(new ArrayAdapter<>(
             this,
             R.layout.action_sheet_item,
             new String[]{

@@ -1,14 +1,17 @@
 package com.zyuco.lab6;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,10 +22,16 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter;
 import jp.wasabeef.recyclerview.animators.OvershootInLeftAnimator;
@@ -31,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean isMainPage = true;
     List<Map<String, String>> items = new LinkedList<>();
     List<Map<String, String>> cart = new LinkedList<>();
+    SimpleAdapter cartAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
             new String[]{"first", "name", "price"},
             new int[]{R.id.first, R.id.name, R.id.price});
         list1.setAdapter(adapter1);
-        ((Lab6Application)getApplicationContext()).cartAdapter = adapter1;
+        cartAdapter = adapter1;
         list1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -128,6 +138,43 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
+
+        registDynamicReceiver();
+        subscribeEvents();
+        sendInitialBroadcast();
+    }
+
+    private void sendInitialBroadcast() {
+        Intent broadcast = new Intent(this, StaticReceiver.class); // a fxxking must-do in API 26!
+        broadcast.setAction(StaticReceiver.SHOW_RECOMMEND);
+        Random random = new Random();
+        int selected = random.nextInt(items.size());
+        Map<String, String> item = items.get(selected);
+        broadcast.putExtra("name", item.get("name"));
+        broadcast.putExtra("price", item.get("price"));
+        broadcast.putExtra("type", item.get("type"));
+        broadcast.putExtra("info", item.get("info"));
+        broadcast.putExtra("sname", item.get("sname"));
+        broadcast.putExtra("first", item.get("first"));
+        sendBroadcast(broadcast);
+        Log.i("123", "static sent");
+    }
+
+    private void registDynamicReceiver() {
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(DynamicReceiver.ADD_SHOPLIST);
+        registerReceiver(new DynamicReceiver(), filter);
+    }
+
+    private void subscribeEvents() {
+        EventBus.getDefault().register(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onCartEvent(MessageEvent event) {
+        Log.i("123", "event received");
+        cart.add(event.itemData);
+        cartAdapter.notifyDataSetChanged();
     }
 
     private void bindClickListeners() {
@@ -169,8 +216,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initData() {
-        items = ((Lab6Application) getApplicationContext()).items;
-        cart = ((Lab6Application) getApplicationContext()).cart;
         String[][] arr = new String[][]{
             {"Enchated Forest", "￥ 5.00", "作者", "Johanna Basford", "enchatedforest"},
             {"Arla Milk", "￥ 59.00", "产地", "德国", "arla"},
@@ -194,8 +239,6 @@ public class MainActivity extends AppCompatActivity {
             map.put("first", obj[0].substring(0, 1).toUpperCase());
             items.add(map);
         }
-
-        // TODO: init cart
     }
 }
 
