@@ -43,6 +43,19 @@ public class MainActivity extends AppCompatActivity {
     SimpleAdapter cartAdapter;
 
     @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        goCart(intent);
+    }
+
+    private void goCart(Intent intent) {
+        Bundle bundle = intent.getExtras();
+        if (bundle != null && bundle.containsKey("goCart") && bundle.get("goCart").equals("true")) {
+            togglePage(false);
+        }
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -142,6 +155,7 @@ public class MainActivity extends AppCompatActivity {
         registDynamicReceiver();
         subscribeEvents();
         sendInitialBroadcast();
+        goCart(getIntent());
     }
 
     private void sendInitialBroadcast() {
@@ -186,22 +200,36 @@ public class MainActivity extends AppCompatActivity {
         switcher.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                isMainPage = !isMainPage;
-                if (isMainPage) {
-                    switcher.setImageResource(R.mipmap.shoplist);
-                    list.setVisibility(View.VISIBLE);
-                    list1.setVisibility(View.INVISIBLE);
-                    cartTitle.setVisibility(View.INVISIBLE);
-                    line.setVisibility(View.INVISIBLE);
-                } else {
-                    switcher.setImageResource(R.mipmap.mainpage);
-                    list.setVisibility(View.INVISIBLE);
-                    list1.setVisibility(View.VISIBLE);
-                    cartTitle.setVisibility(View.VISIBLE);
-                    line.setVisibility(View.VISIBLE);
-                }
+                togglePage();
             }
         });
+    }
+
+    private void togglePage() {
+        togglePage(!isMainPage);
+    }
+
+    private void togglePage(boolean isMain) {
+        final FloatingActionButton switcher = findViewById(R.id.switchCart);
+        final RecyclerView list = findViewById(R.id.item_list);
+        final ListView list1 = findViewById(R.id.cart_list);
+        final View cartTitle = findViewById(R.id.cart_title);
+        final View line = findViewById(R.id.cart_title_line);
+
+        isMainPage = isMain;
+        if (isMainPage) {
+            switcher.setImageResource(R.mipmap.shoplist);
+            list.setVisibility(View.VISIBLE);
+            list1.setVisibility(View.INVISIBLE);
+            cartTitle.setVisibility(View.INVISIBLE);
+            line.setVisibility(View.INVISIBLE);
+        } else {
+            switcher.setImageResource(R.mipmap.mainpage);
+            list.setVisibility(View.INVISIBLE);
+            list1.setVisibility(View.VISIBLE);
+            cartTitle.setVisibility(View.VISIBLE);
+            line.setVisibility(View.VISIBLE);
+        }
     }
 
     private void openItemDetail(Map<String, String> map) {

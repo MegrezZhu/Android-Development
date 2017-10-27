@@ -45,6 +45,7 @@ public class DynamicReceiver extends BroadcastReceiver {
             .setAutoCancel(true);
 
         Intent mIntent = new Intent(context, MainActivity.class);
+        mIntent.putExtra("goCart", true);
         PendingIntent mPendingIntent = PendingIntent.getActivity(context, 0, mIntent, 0);
         builder.setContentIntent(mPendingIntent);
 
