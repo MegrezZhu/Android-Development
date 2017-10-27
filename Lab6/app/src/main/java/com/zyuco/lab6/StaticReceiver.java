@@ -43,7 +43,7 @@ public class StaticReceiver extends BroadcastReceiver {
 
         Intent mIntent = new Intent(context, ItemDetailActivity.class);
         mIntent.putExtras(bundle);
-        PendingIntent mPendingIntent = PendingIntent.getActivity(context, 0, mIntent, 0);
+        PendingIntent mPendingIntent = PendingIntent.getActivity(context, 0, mIntent, PendingIntent.FLAG_ONE_SHOT);
         builder.setContentIntent(mPendingIntent);
 
         Notification notify = builder.build();

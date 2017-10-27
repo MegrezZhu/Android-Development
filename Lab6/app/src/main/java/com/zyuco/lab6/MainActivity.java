@@ -45,12 +45,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        Log.i("123", "new intent!");
         goCart(intent);
     }
 
     private void goCart(Intent intent) {
         Bundle bundle = intent.getExtras();
-        if (bundle != null && bundle.containsKey("goCart") && bundle.get("goCart").equals("true")) {
+        if (bundle != null && bundle.containsKey("goCart") && bundle.get("goCart").equals(true)) {
             togglePage(false);
         }
     }
