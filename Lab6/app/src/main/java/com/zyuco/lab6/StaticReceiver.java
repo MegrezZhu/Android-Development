@@ -38,7 +38,7 @@ public class StaticReceiver extends BroadcastReceiver {
             .setContentText(String.format("%1s仅售%1s!", name, price))
             .setTicker("新商品热卖")
             .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher))
-            .setSmallIcon(R.mipmap.full_star)
+            .setSmallIcon(R.mipmap.ic_launcher)
             .setAutoCancel(true);
 
         Intent mIntent = new Intent(context, ItemDetailActivity.class);

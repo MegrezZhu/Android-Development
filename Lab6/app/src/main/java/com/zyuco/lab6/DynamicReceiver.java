@@ -41,7 +41,7 @@ public class DynamicReceiver extends BroadcastReceiver {
             .setContentText(String.format("%1s已添加到购物车", name))
             .setTicker("马上下单")
             .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher))
-            .setSmallIcon(R.mipmap.full_star)
+            .setSmallIcon(R.mipmap.ic_launcher)
             .setAutoCancel(true);
 
         Intent mIntent = new Intent(context, MainActivity.class);
