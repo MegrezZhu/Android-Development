@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Lab6</string>
+    <string name="app_name">Lab7</string>
     <string name="title_activity_item_detail">ItemDetailActivity</string>
     <string name="item_more_info">更多产品信息</string>
     <string name="item_purchase">一键下单</string>

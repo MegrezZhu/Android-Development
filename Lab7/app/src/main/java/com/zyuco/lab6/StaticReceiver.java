@@ -1,4 +1,4 @@
-package com.zyuco.lab6;
+package com.zyuco.lab7;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -15,7 +15,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 public class StaticReceiver extends BroadcastReceiver {
-    public final static String SHOW_RECOMMEND = "com.zyuco.lab6.SHOW_RECOMMEND";
+    public final static String SHOW_RECOMMEND = "com.zyuco.lab7.SHOW_RECOMMEND";
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.i("123", "static receiver");

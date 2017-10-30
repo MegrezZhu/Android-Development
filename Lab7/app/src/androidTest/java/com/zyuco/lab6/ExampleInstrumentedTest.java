@@ -1,4 +1,4 @@
-package com.zyuco.lab6;
+package com.zyuco.lab7;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.zyuco.lab6", appContext.getPackageName());
+        assertEquals("com.zyuco.lab7", appContext.getPackageName());
     }
 }

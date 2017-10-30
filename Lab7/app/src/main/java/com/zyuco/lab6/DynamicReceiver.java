@@ -1,4 +1,4 @@
-package com.zyuco.lab6;
+package com.zyuco.lab7;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.Random;
 
 public class DynamicReceiver extends BroadcastReceiver {
-    public final static String ADD_SHOPLIST = "com.zyuco.lab6.ADD_SHOPLIST";
+    public final static String ADD_SHOPLIST = "com.zyuco.lab7.ADD_SHOPLIST";
 
     @Override
     public void onReceive(Context context, Intent intent) {

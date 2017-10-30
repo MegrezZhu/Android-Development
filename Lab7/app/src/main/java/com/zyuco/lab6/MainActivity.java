@@ -1,4 +1,4 @@
-package com.zyuco.lab6;
+package com.zyuco.lab7;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
