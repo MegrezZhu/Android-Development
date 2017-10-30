@@ -15,4 +15,5 @@
     <string name="cart_title_first">*</string>
     <string name="cart_title_name">购物车</string>
     <string name="cart_title_price">价格</string>
+    <string name="widget_empty">当前没有任何信息</string>
 </resources>

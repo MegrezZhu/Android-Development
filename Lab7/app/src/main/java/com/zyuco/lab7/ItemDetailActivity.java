@@ -11,6 +11,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.zyuco.lab7.widget.UpdateReceiver;
+
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.HashMap;
@@ -63,6 +65,9 @@ public class ItemDetailActivity extends AppCompatActivity {
                 Intent broadcast = new Intent(DynamicReceiver.ADD_SHOPLIST);
                 broadcast.putExtras(bundle); // re-use
                 ItemDetailActivity.this.sendBroadcast(broadcast);
+                Intent toWidget = new Intent(UpdateReceiver.ITEM_UPDATE_DYNAMIC);
+                toWidget.putExtras(bundle);
+                ItemDetailActivity.this.sendBroadcast(toWidget);
 
                 EventBus.getDefault().post(new MessageEvent(map)); // notify MainActivity to add card item
             }

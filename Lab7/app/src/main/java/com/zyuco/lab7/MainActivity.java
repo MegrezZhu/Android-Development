@@ -22,6 +22,9 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.zyuco.lab7.widget.Provider;
+import com.zyuco.lab7.widget.UpdateReceiver;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -165,20 +168,33 @@ public class MainActivity extends AppCompatActivity {
         Random random = new Random();
         int selected = random.nextInt(items.size());
         Map<String, String> item = items.get(selected);
-        broadcast.putExtra("name", item.get("name"));
-        broadcast.putExtra("price", item.get("price"));
-        broadcast.putExtra("type", item.get("type"));
-        broadcast.putExtra("info", item.get("info"));
-        broadcast.putExtra("sname", item.get("sname"));
-        broadcast.putExtra("first", item.get("first"));
+        Bundle bundle = new Bundle();
+        bundle.putString("name", item.get("name"));
+        bundle.putString("price", item.get("price"));
+        bundle.putString("type", item.get("type"));
+        bundle.putString("info", item.get("info"));
+        bundle.putString("sname", item.get("sname"));
+        bundle.putString("first", item.get("first"));
+        broadcast.putExtras(bundle);
         sendBroadcast(broadcast);
         Log.i("123", "static sent");
+
+        // and sent to widget
+        Intent toWidget = new Intent(this, Provider.class);
+        toWidget.setAction(Provider.ITEM_UPDATE_STATIC);
+        toWidget.putExtras(bundle);
+        sendBroadcast(toWidget);
     }
 
     private void registDynamicReceiver() {
         IntentFilter filter = new IntentFilter();
         filter.addAction(DynamicReceiver.ADD_SHOPLIST);
         registerReceiver(new DynamicReceiver(), filter);
+
+        // for widget
+        IntentFilter filter1 = new IntentFilter();
+        filter1.addAction(UpdateReceiver.ITEM_UPDATE_DYNAMIC);
+        registerReceiver(new UpdateReceiver(), filter1);
     }
 
     private void subscribeEvents() {

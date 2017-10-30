@@ -11,8 +11,8 @@
         android:theme="@style/AppTheme">
         <activity
             android:name="com.zyuco.lab7.MainActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:launchMode="singleInstance">
+            android:launchMode="singleInstance"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -28,6 +28,19 @@
             <intent-filter>
                 <action android:name="com.zyuco.lab7.SHOW_RECOMMEND"/>
             </intent-filter>
+        </receiver>
+
+        <receiver android:name=".widget.Provider">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+                <action android:name="com.zyuco.lab7.widget.CLICK"/>
+                <action android:name="com.zyuco.lab7.widget.ITEM_UPDATE_STATIC"/>
+                <action android:name="com.zyuco.lab7.widget.GO_DETAIL"/>
+                <action android:name="com.zyuco.lab7.widget.GO_CART"/>
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/appwidget_info"/>
         </receiver>
     </application>
 
