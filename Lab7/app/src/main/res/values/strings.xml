@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">Lab6</string>
+    <string name="title_activity_item_detail">ItemDetailActivity</string>
+    <string name="item_more_info">更多产品信息</string>
+    <string name="item_purchase">一键下单</string>
+    <string name="item_share">分享商品</string>
+    <string name="item_no_interest">不感兴趣</string>
+    <string name="item_more_sale">查看更多商品促销信息</string>
+    <string name="item_deleted_toast">移除第%1$d个商品</string>
+    <string name="item_add_toast">商品已添加到购物车</string>
+    <string name="dialog_cancel">取消</string>
+    <string name="dialog_confirm">确定</string>
+    <string name="dialog_remove_item">移除商品</string>
+    <string name="dialog_remove_item_from_cart">从购物车移除%1$s?</string>
+    <string name="cart_title_first">*</string>
+    <string name="cart_title_name">购物车</string>
+    <string name="cart_title_price">价格</string>
+</resources>
