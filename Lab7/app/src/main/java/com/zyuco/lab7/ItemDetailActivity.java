@@ -1,6 +1,7 @@
 package com.zyuco.lab7;
 
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -24,6 +25,9 @@ public class ItemDetailActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        registDynamicReceiver();
+
         setContentView(R.layout.activity_item_detail);
 
         updateData(getIntent().getExtras());
@@ -100,5 +104,16 @@ public class ItemDetailActivity extends AppCompatActivity {
 
         TextView more = findViewById(R.id.more);
         more.setText(bundle.get("type").toString() + " " + bundle.get("info"));
+    }
+
+    private void registDynamicReceiver() {
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(DynamicReceiver.ADD_SHOPLIST);
+        registerReceiver(new DynamicReceiver(), filter);
+
+        // for widget
+        IntentFilter filter1 = new IntentFilter();
+        filter1.addAction(UpdateReceiver.ITEM_UPDATE_DYNAMIC);
+        registerReceiver(new UpdateReceiver(), filter1);
     }
 }

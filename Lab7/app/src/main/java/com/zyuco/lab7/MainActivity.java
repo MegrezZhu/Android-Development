@@ -156,7 +156,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        registDynamicReceiver();
         subscribeEvents();
         sendInitialBroadcast();
         goCart(getIntent());
@@ -184,17 +183,6 @@ public class MainActivity extends AppCompatActivity {
         toWidget.setAction(Provider.ITEM_UPDATE_STATIC);
         toWidget.putExtras(bundle);
         sendBroadcast(toWidget);
-    }
-
-    private void registDynamicReceiver() {
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(DynamicReceiver.ADD_SHOPLIST);
-        registerReceiver(new DynamicReceiver(), filter);
-
-        // for widget
-        IntentFilter filter1 = new IntentFilter();
-        filter1.addAction(UpdateReceiver.ITEM_UPDATE_DYNAMIC);
-        registerReceiver(new UpdateReceiver(), filter1);
     }
 
     private void subscribeEvents() {
