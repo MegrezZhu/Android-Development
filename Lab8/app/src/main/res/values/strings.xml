@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">MusicBox</string>
     <string name="button_play">PLAY</string>
+    <string name="button_pause">PAUSE</string>
     <string name="button_stop">STOP</string>
     <string name="button_quit">QUIT</string>
     <string name="time_zero">0:00</string>
