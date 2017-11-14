@@ -1,15 +1,20 @@
 package com.zyuco.musicbox;
 
+import android.Manifest;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Parcel;
 import android.os.RemoteException;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -31,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private ServiceConnection conn;
     private State state = State.INIT;
     final static private String TAG = "lab8";
+    final static int PERMISSION_REQUSET = 23333;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,9 +44,23 @@ public class MainActivity extends AppCompatActivity {
 
         setListeners();
         initAnimator();
+        
+        verifyPermissions();
+    }
 
-        startPlayerService();
-        startSyncingSeekbar();
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        Log.i(TAG, "onRequestPermissionsResult");
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PERMISSION_REQUSET) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                startPlayerService();
+                startSyncingSeekbar();
+            } else {
+                MainActivity.this.finish();
+                System.exit(0);
+            }
+        }
     }
 
     private void startPlayerService() {
@@ -178,6 +198,16 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void verifyPermissions() {
+        int permission = ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_REQUSET);
+        } else {
+            startPlayerService();
+            startSyncingSeekbar();
+        }
     }
 
     private void updateState() {
