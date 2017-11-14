@@ -4,7 +4,7 @@
     <string name="button_pause">PAUSE</string>
     <string name="button_stop">STOP</string>
     <string name="button_quit">QUIT</string>
-    <string name="time_zero">0:00</string>
+    <string name="time_zero">00:00</string>
     <string name="state_init"></string>
     <string name="state_playing">Playing</string>
     <string name="state_paused">Paused</string>

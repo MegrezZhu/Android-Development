@@ -5,12 +5,9 @@ import android.animation.ValueAnimator;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.media.MediaPlayer;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
-import android.os.Messenger;
 import android.os.Parcel;
 import android.os.RemoteException;
 import android.support.v7.app.AppCompatActivity;
@@ -22,7 +19,6 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import java.io.IOException;
 import java.lang.ref.WeakReference;
 
 public class MainActivity extends AppCompatActivity {
@@ -44,14 +40,11 @@ public class MainActivity extends AppCompatActivity {
         initAnimator();
 
         startPlayerService();
+        startSyncingSeekbar();
     }
 
     private void startPlayerService() {
         Intent intent = new Intent(this, MediaPlayerService.class);
-        Handler progressHandler = new ProgressHandler(this);
-        intent.putExtra("progressHandler", new Messenger(progressHandler));
-
-        startService(intent);
 
         conn = new ServiceConnection() {
             @Override
@@ -73,6 +66,73 @@ public class MainActivity extends AppCompatActivity {
         animator = new CDAnimator(cd);
     }
 
+    private void startSyncingSeekbar() {
+        // seekbar to mediaplayer
+        ((SeekBar) findViewById(R.id.progress)).setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean fromUser) {
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                if (binder != null) {
+                    try {
+                        binder.transact(MediaPlayerService.PAUSE, Parcel.obtain(), Parcel.obtain(), 0);
+                        state = State.PAUSED;
+                        updateState();
+                    } catch (RemoteException e) {
+                        Log.e(TAG, "onStartTrackingTouch: ", e);
+                    }
+                }
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                if (binder != null) {
+                    try {
+                        Parcel data = Parcel.obtain();
+                        data.writeInt(seekBar.getProgress());
+                        binder.transact(MediaPlayerService.SEEK, data, Parcel.obtain(), 0);
+
+                        binder.transact(MediaPlayerService.PLAY, Parcel.obtain(), Parcel.obtain(), 0);
+                        state = State.PLAYING;
+                        updateState();
+                    } catch (RemoteException e) {
+                        Log.e(TAG, "onStartTrackingTouch: ", e);
+                    }
+                }
+            }
+        });
+
+        // mediaplayer to seekbar
+        final Handler handler = new ProgressHandler(this);
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                while (true) {
+                    try {
+                        if (state == MainActivity.State.PLAYING) {
+                            Parcel reply = Parcel.obtain();
+                            binder.transact(MediaPlayerService.SYNC_PROGRESS, Parcel.obtain(), reply, 0);
+                            int duration = reply.readInt();
+                            int currentPosition = reply.readInt();
+
+                            Message message = handler.obtainMessage();
+                            message.arg1 = duration;
+                            message.arg2 = currentPosition;
+
+                            handler.sendMessage(message);
+                        }
+                        Thread.sleep(500);
+                    } catch (Exception e) {
+                        Log.e(TAG, "run: ", e);
+                    }
+                }
+            }
+        };
+        thread.start();
+    }
+
     private void setListeners() {
         findViewById(R.id.play_button).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,7 +141,6 @@ public class MainActivity extends AppCompatActivity {
                     if (binder == null) return;
                     binder.transact(MediaPlayerService.TOGGLE_PLAY, Parcel.obtain(), Parcel.obtain(), 0);
                     state = state == State.PLAYING ? State.PAUSED : State.PLAYING;
-                    animator.togglePlay();
                     updateState();
                 } catch (RemoteException e) {
                     Log.e(TAG, e.getMessage());
@@ -95,7 +154,10 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     binder.transact(MediaPlayerService.STOP, Parcel.obtain(), Parcel.obtain(), 0);
                     state = State.STOPPED;
-                    animator.reset();
+                    SeekBar bar = (SeekBar) findViewById(R.id.progress);
+                    bar.setProgress(0);
+                    TextView currentTime = (TextView) findViewById(R.id.current_time);
+                    currentTime.setText(R.string.time_zero);
                     updateState();
                 } catch (RemoteException e) {
                     Log.e(TAG, e.getMessage());
@@ -116,48 +178,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-
-        ((SeekBar) findViewById(R.id.progress)).setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                if (binder != null) {
-                    try {
-                        Parcel data = Parcel.obtain();
-                        data.writeInt(i);
-                        binder.transact(MediaPlayerService.SEEK, data, Parcel.obtain(), 0);
-                    } catch (RemoteException e) {
-                        Log.e(TAG, e.getMessage());
-                    }
-                }
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-                if (binder != null) {
-                    try {
-                        binder.transact(MediaPlayerService.PAUSE, Parcel.obtain(), Parcel.obtain(), 0);
-                        state = State.PAUSED;
-                        updateState();
-                    } catch (RemoteException e) {
-                        Log.e(TAG, "onStartTrackingTouch: ", e);
-                    }
-                }
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                if (binder != null) {
-                    try {
-                        binder.transact(MediaPlayerService.PLAY, Parcel.obtain(), Parcel.obtain(), 0);
-                        state = State.PLAYING;
-                        updateState();
-                        // TODO what if the song finished?
-                    } catch (RemoteException e) {
-                        Log.e(TAG, "onStartTrackingTouch: ", e);
-                    }
-                }
-            }
-        });
     }
 
     private void updateState() {
@@ -169,13 +189,16 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case PAUSED:
                 id = R.string.state_paused;
+                animator.pause();
                 break;
             case PLAYING:
                 id = R.string.state_playing;
                 playId = R.string.button_pause;
+                animator.start();
                 break;
             case STOPPED:
                 id = R.string.state_stopped;
+                animator.reset();
                 break;
         }
         TextView stateView = (TextView) findViewById(R.id.state);
@@ -205,6 +228,18 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+        void pause() {
+            if (!animator.isPaused()) {
+                animator.pause();
+            }
+        }
+
+        void start() {
+            if (animator.isPaused()) {
+                animator.resume();
+            }
+        }
+
         void reset() {
             animator.pause();
             animator.setCurrentFraction(0f);
@@ -222,7 +257,19 @@ public class MainActivity extends AppCompatActivity {
         public void handleMessage(Message msg) {
             MainActivity activity = ref.get();
             if (activity != null) {
-                // TODO
+                int duration = msg.arg1;
+                int currentPosition = msg.arg2;
+
+                SeekBar bar = (SeekBar) activity.findViewById(R.id.progress);
+                bar.setMax(duration);
+                bar.setProgress(currentPosition);
+                Log.i(TAG, String.format("duration: %d, current: %d", duration, currentPosition));
+
+                TextView currentTime = (TextView) activity.findViewById(R.id.current_time);
+                TextView totalTime = (TextView) activity.findViewById(R.id.total_time);
+                currentTime.setText(String.format("%02d:%02d", currentPosition / 60, currentPosition % 60));
+                totalTime.setText(String.format("%02d:%02d", duration / 60, duration % 60));
+
                 super.handleMessage(msg);
             }
         }

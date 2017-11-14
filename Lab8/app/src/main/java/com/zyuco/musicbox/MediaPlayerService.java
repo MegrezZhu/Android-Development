@@ -2,8 +2,10 @@ package com.zyuco.musicbox;
 
 import android.app.Service;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Environment;
 import android.os.IBinder;
+import android.os.Messenger;
 import android.os.Parcel;
 import android.os.RemoteException;
 import android.support.annotation.Nullable;
@@ -17,6 +19,7 @@ public class MediaPlayerService extends Service {
     final static int TOGGLE_PLAY = 102;
     final static int STOP = 103;
     final static int SEEK = 104;
+    final static int SYNC_PROGRESS = 105;
     final static String TAG = "lab8.MediaPlayerService";
 
     private Binder binder = new Binder();
@@ -50,8 +53,13 @@ public class MediaPlayerService extends Service {
                     player.stop();
                     break;
                 case SEEK:
-                    double pos = data.readInt();
-                    player.seekTo((int)Math.floor(player.getDuration() * pos / 100));
+                    int pos = data.readInt();
+                    Log.i(TAG, "onTransact: seek to " + Integer.toString(pos));
+                    player.seekTo(pos * 1000);
+                case SYNC_PROGRESS:
+                    reply.writeInt(player.getDuration() / 1000); // duration in sec
+                    reply.writeInt(player.getCurrentPosition() / 1000); // current position in sec
+                    break;
             }
             return super.onTransact(code, data, reply, flags);
         }
@@ -63,8 +71,7 @@ class MediaPlayer extends android.media.MediaPlayer {
         try {
             setDataSource(Environment.getExternalStorageDirectory() + "/melt.mp3");
             prepare();
-            start();
-            pause();
+            setLooping(true);
         } catch (IOException e) {
             Log.e("lab8.MediaPlayerService", "MediaPlayer: ", e);
         }
