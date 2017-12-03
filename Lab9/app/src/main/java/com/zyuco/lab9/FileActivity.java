@@ -80,7 +80,6 @@ public class FileActivity extends AppCompatActivity {
         findViewById(R.id.button_clear).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                filenameView.setText("");
                 contentView.setText("");
             }
         });

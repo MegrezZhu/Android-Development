@@ -56,7 +56,7 @@ public class LoginActivity extends AppCompatActivity {
                         Toast.makeText(LoginActivity.this, R.string.toast_mismatched_confirm_password, Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    if (newPw.getText().toString().equals("")) {
+                    if (newPw.getText().toString().equals("") || conPw.getText().toString().equals("")) {
                         Toast.makeText(LoginActivity.this, R.string.toast_empty_password, Toast.LENGTH_SHORT).show();
                     } else {
                         String password = newPw.getText().toString();
