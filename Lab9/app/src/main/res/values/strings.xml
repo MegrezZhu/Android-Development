@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Lab9</string>
+    <string name="hint_new_password">New Password</string>
+    <string name="hint_confirm_password">Confirm Password</string>
+    <string name="hint_password">Password</string>
+    <string name="toast_empty_password">Password cannot be empty</string>
+    <string name="toast_mismatched_confirm_password">Password Mismatch</string>
+    <string name="button_ok">OK</string>
+    <string name="button_clear">CLEAR</string>
+</resources>
