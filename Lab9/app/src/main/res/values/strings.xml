@@ -7,4 +7,16 @@
     <string name="toast_mismatched_confirm_password">Password Mismatch</string>
     <string name="button_ok">OK</string>
     <string name="button_clear">CLEAR</string>
+    <string name="title_file_editor">File Editor</string>
+    <string name="button_save">SAVE</string>
+    <string name="button_load">LOAD</string>
+    <string name="button_delete">DELETE</string>
+    <string name="toast_file_content_empty">Content is empty</string>
+    <string name="toast_file_name_empty">Filename is empty</string>
+    <string name="toast_file_load_failed">Fail to load file</string>
+    <string name="toast_file_load_success">Load successfully</string>
+    <string name="toast_file_delete_success">Delete successfully</string>
+    <string name="toast_file_save_success">Save successfully</string>
+    <string name="hint_file_name">File Name Here</string>
+    <string name="hint_file_content">File Content Here</string>
 </resources>

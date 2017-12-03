@@ -1,5 +1,6 @@
 package com.zyuco.lab9;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -23,11 +24,6 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         pref = getSharedPreferences(PREFRENCE_NAME, MODE_PRIVATE);
-
-        // FIXME: this is for debug usage
-        SharedPreferences.Editor editor = pref.edit();
-        editor.remove(KEY_PASSWORD);
-        editor.commit();
 
         hasPassword = pref.contains(KEY_PASSWORD);
 
@@ -55,7 +51,7 @@ public class LoginActivity extends AppCompatActivity {
                     if (pw.getText().toString().equals(password)) {
                         // password OK
                         // goto file activity
-                        // TODO
+                        startActivity(new Intent(LoginActivity.this, FileActivity.class));
                     } else {
                         Toast.makeText(LoginActivity.this, R.string.toast_mismatched_confirm_password, Toast.LENGTH_SHORT).show();
                     }
@@ -70,7 +66,7 @@ public class LoginActivity extends AppCompatActivity {
                             editor.putString(KEY_PASSWORD, password);
                             editor.apply();
                             // and goto file activity
-                            // TODO
+                            startActivity(new Intent(LoginActivity.this, FileActivity.class));
                         } else {
                             Toast.makeText(LoginActivity.this, R.string.toast_mismatched_confirm_password, Toast.LENGTH_SHORT).show();
                         }
