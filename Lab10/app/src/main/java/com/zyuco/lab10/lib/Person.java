@@ -31,4 +31,13 @@ public class Person implements Serializable {
 
         return person;
     }
+
+    public static Person fromMap(Map<String, String> map) {
+        Person person = new Person(null, null, null);
+        person.name = map.get("name");
+        person.birthday = map.get("birthday");
+        person.gift = map.get("gift");
+
+        return person;
+    }
 }

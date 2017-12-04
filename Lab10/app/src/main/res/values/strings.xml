@@ -8,10 +8,14 @@
     <string name="hint_name">姓名：</string>
     <string name="hint_birthday">生日：</string>
     <string name="hint_gift">礼物：</string>
+    <string name="phone">电话：%s</string>
     <string name="toast_empty_name">名字为空，请完善</string>
     <string name="toast_duplicate_name">名字重复啦，请检查</string>
     <string name="toast_delete_success">删除成功</string>
-    <string name="dialog_remove_item">是否删除？</string>
+    <string name="dialog_remove_title">是否删除？</string>
     <string name="dialog_yes">是</string>
     <string name="dialog_no">否</string>
+    <string name="dialog_edit_save">保存修改</string>
+    <string name="dialog_edit_discard">放弃修改</string>
+    <string name="dialog_edit_title">ヾ(✿ﾟ▽ﾟ)ノ耶</string>
 </resources>

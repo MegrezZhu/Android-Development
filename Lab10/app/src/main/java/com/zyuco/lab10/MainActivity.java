@@ -5,17 +5,18 @@ import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.style.ClickableSpan;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 
 import com.zyuco.lab10.lib.DBAdapter;
 import com.zyuco.lab10.lib.Person;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -53,13 +54,13 @@ public class MainActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                // TODO: goto detail
+                openEditDialog(Person.fromMap(list.get(i)), i);
             }
         });
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                raiseRemoveItemDialog(i);
+                openRemoveItemDialog(i);
                 return true;
             }
         });
@@ -75,10 +76,58 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void raiseRemoveItemDialog(final int index) {
+    private void openEditDialog(final Person person, final int index) {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+
+        LayoutInflater inflater = LayoutInflater.from(this);
+        final View dialogView = inflater.inflate(R.layout.item_edit_layout, null);
+
+        renderEditDialog(dialogView, person);
+
+        final AlertDialog dialog = builder
+            .setTitle(R.string.dialog_edit_title)
+            .setView(dialogView)
+            .setNegativeButton(
+                R.string.dialog_edit_discard,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        // do nothing
+                    }
+                }
+            )
+            .setPositiveButton(
+                R.string.dialog_edit_save,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        person.birthday = ((EditText)dialogView.findViewById(R.id.birthday)).getText().toString();
+                        person.gift = ((EditText)dialogView.findViewById(R.id.gift)).getText().toString();
+
+                        dbAdapter.getCRUD().update(person);
+                        list.set(index, person.toMap());
+
+                        adapter.notifyDataSetChanged();
+                    }
+                }
+            )
+            .create();
+
+        dialog.show();
+    }
+
+    private void renderEditDialog(View dialogView, Person person) {
+        ((TextView)dialogView.findViewById(R.id.name)).setText(person.name);
+        ((EditText)dialogView.findViewById(R.id.birthday)).setText(person.birthday);
+        ((EditText)dialogView.findViewById(R.id.gift)).setText(person.gift);
+        ((TextView)dialogView.findViewById(R.id.phone)).setText(String.format(getString(R.string.phone), "无"));
+        // TODO: syncronize phone info
+    }
+
+    private void openRemoveItemDialog(final int index) {
         final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         final AlertDialog dialog = builder
-            .setTitle(R.string.dialog_remove_item)
+            .setTitle(R.string.dialog_remove_title)
             .setNegativeButton(
                 R.string.dialog_no,
                 new DialogInterface.OnClickListener() {
