@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.zyuco.lab10.lib.DBAdapter;
 import com.zyuco.lab10.lib.Person;
 
 public class CreateActivity extends AppCompatActivity {
@@ -29,7 +30,10 @@ public class CreateActivity extends AppCompatActivity {
                     Toast.makeText(CreateActivity.this, R.string.toast_empty_name, Toast.LENGTH_SHORT).show();
                     return;
                 }
-                // TODO: duplicate name checking
+                if (DBAdapter.getInstance().getCRUD().duplicated(name)) {
+                    Toast.makeText(CreateActivity.this, R.string.toast_empty_name, Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
                 String birthday = ((EditText)findViewById(R.id.birthday)).getText().toString();
                 String gift = ((EditText)findViewById(R.id.gift)).getText().toString();
