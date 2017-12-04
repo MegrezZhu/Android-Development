@@ -2,6 +2,8 @@ package com.zyuco.lab10;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
+import android.provider.ContactsContract;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -37,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
         render();
     }
 
-    private void render () {
+    private void render() {
         final DBAdapter.CRUD cruder = dbAdapter.getCRUD();
         list = cruder.getAll();
 
@@ -101,8 +103,8 @@ public class MainActivity extends AppCompatActivity {
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        person.birthday = ((EditText)dialogView.findViewById(R.id.birthday)).getText().toString();
-                        person.gift = ((EditText)dialogView.findViewById(R.id.gift)).getText().toString();
+                        person.birthday = ((EditText) dialogView.findViewById(R.id.birthday)).getText().toString();
+                        person.gift = ((EditText) dialogView.findViewById(R.id.gift)).getText().toString();
 
                         dbAdapter.getCRUD().update(person);
                         list.set(index, person.toMap());
@@ -117,11 +119,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void renderEditDialog(View dialogView, Person person) {
-        ((TextView)dialogView.findViewById(R.id.name)).setText(person.name);
-        ((EditText)dialogView.findViewById(R.id.birthday)).setText(person.birthday);
-        ((EditText)dialogView.findViewById(R.id.gift)).setText(person.gift);
-        ((TextView)dialogView.findViewById(R.id.phone)).setText(String.format(getString(R.string.phone), "无"));
-        // TODO: syncronize phone info
+        ((TextView) dialogView.findViewById(R.id.name)).setText(person.name);
+        ((EditText) dialogView.findViewById(R.id.birthday)).setText(person.birthday);
+        ((EditText) dialogView.findViewById(R.id.gift)).setText(person.gift);
+
+        String phone = getPhone(person.name);
+        ((TextView) dialogView.findViewById(R.id.phone)).setText(String.format(getString(R.string.phone), phone != null ? phone : "无"));
     }
 
     private void openRemoveItemDialog(final int index) {
@@ -153,6 +156,30 @@ public class MainActivity extends AppCompatActivity {
             .create();
 
         dialog.show();
+    }
+
+    private String getPhone(String name) {
+        String[] projection = new String[]{
+            ContactsContract.Contacts._ID,
+            ContactsContract.Contacts.DISPLAY_NAME
+        };
+        try (Cursor cursor = getContentResolver().query(ContactsContract.Contacts.CONTENT_URI,
+            projection, ContactsContract.Contacts.DISPLAY_NAME + "= ?", new String[]{name}, null)) {
+
+            if (cursor.moveToFirst()) {
+                int id = cursor.getInt(cursor.getColumnIndex(ContactsContract.Contacts._ID));
+                Log.i(TAG, String.format("get id %d", id));
+                try (Cursor phone =
+                         getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
+                             ContactsContract.CommonDataKinds.Phone.CONTACT_ID + "=" + id, null, null)) {
+                    if (phone.moveToFirst()) {
+                        return phone.getString(phone.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                    }
+                }
+            }
+
+        }
+        return null;
     }
 
     @Override
