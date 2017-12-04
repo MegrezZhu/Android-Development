@@ -52,7 +52,7 @@ public class DBAdapter extends SQLiteOpenHelper {
 
     public static synchronized DBAdapter getInstance(Context context) {
         if (instance == null) {
-//            context.deleteDatabase(DB_NAME); // FIXME: this is just for debugging
+//            context.deleteDatabase(DB_NAME);
             instance = new DBAdapter(context.getApplicationContext());
         }
         return instance;
