@@ -170,21 +170,16 @@ public class MainActivity extends AppCompatActivity {
             ContactsContract.Contacts._ID,
             ContactsContract.Contacts.DISPLAY_NAME
         };
-        try (Cursor cursor = getContentResolver().query(ContactsContract.Contacts.CONTENT_URI,
-            projection, ContactsContract.Contacts.DISPLAY_NAME + "= ?", new String[]{name}, null)) {
-
+        try (Cursor cursor = getContentResolver().query(ContactsContract.Contacts.CONTENT_URI, projection, ContactsContract.Contacts.DISPLAY_NAME + "= ?", new String[]{name}, null)) {
             if (cursor.moveToFirst()) {
                 int id = cursor.getInt(cursor.getColumnIndex(ContactsContract.Contacts._ID));
                 Log.i(TAG, String.format("get id %d", id));
-                try (Cursor phone =
-                         getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
-                             ContactsContract.CommonDataKinds.Phone.CONTACT_ID + "=" + id, null, null)) {
+                try (Cursor phone = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + "=" + id, null, null)) {
                     if (phone.moveToFirst()) {
                         return phone.getString(phone.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
                     }
                 }
             }
-
         }
         return null;
     }

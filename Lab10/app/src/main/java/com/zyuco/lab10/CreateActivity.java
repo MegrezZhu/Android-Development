@@ -31,7 +31,7 @@ public class CreateActivity extends AppCompatActivity {
                     return;
                 }
                 if (DBAdapter.getInstance().getCRUD().duplicated(name)) {
-                    Toast.makeText(CreateActivity.this, R.string.toast_empty_name, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CreateActivity.this, R.string.toast_duplicate_name, Toast.LENGTH_SHORT).show();
                     return;
                 }
 
