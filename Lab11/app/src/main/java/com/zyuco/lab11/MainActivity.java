@@ -1,5 +1,6 @@
 package com.zyuco.lab11;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -59,12 +60,18 @@ public class MainActivity extends AppCompatActivity {
         userListAdapter.setOnItemClickListemer(new CommonAdapter.OnItemClickListener() {
             @Override
             public void onClick(int position, Object data) {
-                // TODO
+                User user = (User) data;
+                Log.i(TAG, String.format("clicked: %s", user.name));
+
+                Intent intent = new Intent(MainActivity.this, UserRepoActivity.class);
+                intent.putExtra("user", user);
+                startActivity(intent);
             }
 
             @Override
             public void onLongClick(int position, Object data) {
-                // TODO
+                userList.remove(position);
+                userListAdapter.notifyDataSetChanged();
             }
         });
 
