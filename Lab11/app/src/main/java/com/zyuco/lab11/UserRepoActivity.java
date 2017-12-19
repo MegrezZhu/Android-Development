@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -19,8 +20,11 @@ import com.zyuco.lab11.service.Github;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
 import retrofit2.Call;
 import retrofit2.Callback;
+import retrofit2.HttpException;
 import retrofit2.Response;
 
 public class UserRepoActivity extends AppCompatActivity {
@@ -60,26 +64,31 @@ public class UserRepoActivity extends AppCompatActivity {
     }
 
     private void loadRepos(User user) {
-        Github.getInstance().getRepos(user.name, new Callback<List<Repository>>() {
+        Github.getInstance().getRepos(user.name, new Observer<List<Repository>>() {
             @Override
-            public void onResponse(Call<List<Repository>> call, Response<List<Repository>> response) {
-                try {
-                    List<Repository> data = response.body();
-                    if (data == null) {
-                        Toast.makeText(UserRepoActivity.this, R.string.toast_network_error, Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                    repoList.addAll(data);
-                    repoListAdapter.notifyDataSetChanged();
-                } finally {
-                    setMaskVisible(false);
-                }
+            public void onSubscribe(Disposable d) {
+
             }
 
             @Override
-            public void onFailure(Call<List<Repository>> call, Throwable t) {
-                Toast.makeText(UserRepoActivity.this, R.string.toast_network_error, Toast.LENGTH_SHORT).show();
+            public void onNext(List<Repository> data) {
+                repoList.addAll(data);
+                repoListAdapter.notifyDataSetChanged();
                 setMaskVisible(false);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                int toastId = R.string.toast_unknown_error;
+                if (e instanceof HttpException) toastId = R.string.toast_network_error;
+                Toast.makeText(UserRepoActivity.this, toastId, Toast.LENGTH_SHORT).show();
+                Log.e("Zyuco.RepoList", "onError: ", e);
+                setMaskVisible(false);
+            }
+
+            @Override
+            public void onComplete() {
+
             }
         });
     }

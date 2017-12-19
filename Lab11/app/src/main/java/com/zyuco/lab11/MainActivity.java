@@ -21,8 +21,11 @@ import com.zyuco.lab11.service.Github;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
 import retrofit2.Call;
 import retrofit2.Callback;
+import retrofit2.HttpException;
 import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
@@ -101,27 +104,34 @@ public class MainActivity extends AppCompatActivity {
     private void fetchUser(String name) {
         setMaskVisible(true);
 
-        Github.getInstance().getUser(name, new Callback<User>() {
+        Github.getInstance().getUser(name, new Observer<User>() {
             @Override
-            public void onResponse(Call<User> call, Response<User> response) {
-                try {
-                    User user = response.body();
-                    if (user == null) {
-                        Toast.makeText(MainActivity.this, R.string.toast_user_not_exist, Toast.LENGTH_SHORT).show();
-                        return;
-                    }
+            public void onSubscribe(Disposable d) {
 
-                    userList.add(0, user);
-                    userListAdapter.notifyDataSetChanged();
-                } finally {
-                    setMaskVisible(false);
-                }
             }
 
             @Override
-            public void onFailure(Call<User> call, Throwable t) {
-                Toast.makeText(MainActivity.this, R.string.toast_network_error, Toast.LENGTH_SHORT).show();
+            public void onNext(User user) {
+                userList.add(0, user);
+                userListAdapter.notifyDataSetChanged();
                 setMaskVisible(false);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                int toastId = R.string.toast_unknown_error;
+                if (e instanceof HttpException) {
+                    if (((HttpException) e).code() == 404) toastId = R.string.toast_user_not_exist;
+                    else toastId = R.string.toast_network_error;
+                }
+                Toast.makeText(MainActivity.this, toastId, Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "onError: ", e);
+                setMaskVisible(false);
+            }
+
+            @Override
+            public void onComplete() {
+
             }
         });
     }

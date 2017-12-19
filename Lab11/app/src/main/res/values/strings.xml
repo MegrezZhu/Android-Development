@@ -4,6 +4,7 @@
     <string name="button_fetch">FETCH</string>
     <string name="toast_user_not_exist">User Not Exists</string>
     <string name="toast_network_error">Network Error</string>
+    <string name="toast_unknown_error">Unknown Error</string>
     <string name="user_id">id: %d</string>
     <string name="user_blog">blog: %s</string>
 </resources>
